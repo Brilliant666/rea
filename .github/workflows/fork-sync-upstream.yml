@@ -35,7 +35,7 @@ jobs:
           if gh api --method POST "repos/$GITHUB_REPOSITORY/merge-upstream" \
             -f branch=main > "$RUNNER_TEMP/upstream-sync.json"; then
             echo '### Upstream synchronization succeeded' >> "$GITHUB_STEP_SUMMARY"
-            jq -r '.message, ("Commit: " + .base_branch)' \
+            jq -r '.message, ("Branch: " + .base_branch)' \
               "$RUNNER_TEMP/upstream-sync.json" >> "$GITHUB_STEP_SUMMARY"
           else
             echo '::error::Synchronization failed. Resolve conflicts or permissions manually; no force overwrite was attempted.'
