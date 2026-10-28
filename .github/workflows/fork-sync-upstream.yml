@@ -36,6 +36,9 @@ jobs:
           git init "$work/repo"
           cd "$work/repo"
           git config core.hooksPath /dev/null
+          # Disposable clones need no background object maintenance.
+          git config gc.auto 0
+          git config maintenance.auto false
           git config user.name 'REA upstream sync'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git remote add origin "https://github.com/$GITHUB_REPOSITORY.git"
