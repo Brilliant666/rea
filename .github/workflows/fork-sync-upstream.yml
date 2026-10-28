@@ -45,7 +45,7 @@ jobs:
           before=$(git rev-parse HEAD)
           git fetch --no-tags upstream main
           upstream=$(git rev-parse FETCH_HEAD)
-          if ! git merge --no-edit "$upstream"; then
+          if ! git merge --no-stat --no-edit "$upstream"; then
             echo '::error::Upstream merge failed. Nothing was pushed; resolve conflicts manually.'
             echo '### Sync stopped: merge failed; remote changes preserved' >> "$GITHUB_STEP_SUMMARY"
             git diff --name-only --diff-filter=U >> "$GITHUB_STEP_SUMMARY"
@@ -56,7 +56,7 @@ jobs:
             # Repository-scoped deploy key allows workflow-file updates.
             # Obtain trusted SSH host keys over authenticated HTTPS, not ssh-keyscan.
             umask 077
-            printf '%s\n' "$SYNC_SSH_KEY" > "$work/key"
+            printf '%s\n' "$SYNC_SSH_KEY" | tr -d '\r' > "$work/key"
             unset SYNC_SSH_KEY
             gh api meta --jq '.ssh_keys[] | "github.com " + .' > "$work/known_hosts"
             export GIT_SSH_COMMAND="ssh -i $work/key -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$work/known_hosts"
